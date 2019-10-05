@@ -27,10 +27,11 @@
     "public"
   ],
   "scripts": {
+		"postinstall": "npm run build:front",
     "test": "jest",
-    "front:serve": "vue-cli-service serve",
-    "front:build": "vue-cli-service build --no-clean",
-    "build": "tsc && npm run front:build"
+    "serve": "vue-cli-service serve",
+    "build": "tsc && npm run front:build",
+		"build:front": "vue-cli-service build --no-clean"
   },
   "dependencies": {
     "compression": "^1.7.4",
