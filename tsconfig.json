@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "composite": true,
+    "declaration": true,
+    "removeComments": true,
+    "baseUrl": "./packages",
+    "paths": {
+      "@json-server/*": ["./*/src"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "packages/*/lib",
+    "packages/*/__tests__"
+  ],
+}

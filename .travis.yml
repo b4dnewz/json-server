@@ -1,0 +1,8 @@
+language: node_js
+node_js:
+  - "node"
+  - "lts/*"
+
+before_script: lerna bootstrap
+script: jest --coverage
+after_script: cat ./coverage/lcov.info | coveralls

@@ -1,0 +1,13 @@
+node_modules
+
+# Tests coverage output folder
+coverage
+
+# Typescript build output folders
+**/lib
+
+# Typescript incremental build cache
+tsconfig.tsbuildinfo
+
+# Debug files
+lerna-debug.log
