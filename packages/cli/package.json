@@ -1,0 +1,57 @@
+{
+  "name": "@json-server/cli",
+  "version": "0.0.0",
+  "description": "Command line application that provides a REST JSON server",
+  "author": "Filippo Conti <filippo@codekraft.it>",
+  "homepage": "https://github.com/b4dnewz/json-server",
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.s",
+  "bin": {
+    "json-server": "./lib/index.js"
+  },
+  "directories": {
+    "src": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "test": "jest",
+    "start": "ts-node src/index.ts ../../fixtures/db.json",
+    "build": "tsc"
+  },
+  "keywords": [
+    "json",
+    "json-server",
+    "json-cli"
+  ],
+  "dependencies": {
+    "@json-server/core": "^0.0.1",
+    "clito": "^0.2.0",
+    "indent-string": "^4.0.0",
+    "json-parse-better-errors": "^1.0.2",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "@b4dnewz/express-test-server": "^0.1.0",
+    "@b4dnewz/object-to-argv": "^0.1.1",
+    "@types/indent-string": "^4.0.1",
+    "@types/jest": "^24.0.11",
+    "@types/request": "^2.48.2",
+    "@types/supertest": "^2.0.8",
+    "fs-extra": "^8.1.0",
+    "jest": "^24.7.1",
+    "server-ready": "^0.3.1",
+    "supertest": "^4.0.2",
+    "temp-write": "^4.0.0",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.15.0",
+    "typescript": "^3.4.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
