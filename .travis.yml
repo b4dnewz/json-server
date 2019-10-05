@@ -4,5 +4,5 @@ node_js:
   - "lts/*"
 
 before_script: lerna bootstrap
-script: jest --coverage
+script: jest --coverage --forceExit
 after_script: cat ./coverage/lcov.info | coveralls
