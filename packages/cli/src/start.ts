@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as getPort from "get-port";
 import * as parseJson from "json-parse-better-errors";
 import * as _ from "lodash";
 import * as path from "path";
@@ -36,19 +37,38 @@ export default async function(source: string, opts: StartOptions) {
       clearScreen();
     }
 
-    indentLog(`Loading "${source}"`);
-
     // Reset server variables
     app = null;
     server = null;
 
+    // Get an available port using as preferences
+    // any user provided port or the app preferred port
+    const port = await getPort({
+      port: opts.port || 3000,
+    });
+    const appOptions = {
+      ...opts,
+      port,
+    };
+
+    // If user entered a port and could not be used
+    // just fail with an error message
+    // otherwise set the random choosen port as option
+    // so it will be persistent through reloads
+    if (opts.port && port !== opts.port) {
+      console.error(`The port ${opts.port} is already in use.`);
+      process.exit(1);
+    } else {
+      opts.port = port;
+    }
+
     // Load the database object data
+    indentLog(`Loading "${source}"`);
     const data = await load(source);
-    const finalOpts = {...opts};
 
     // Load application middlewares
     if (opts.middlewares) {
-      finalOpts.middlewares = opts.middlewares.map((m) => {
+      appOptions.middlewares = opts.middlewares.map((m) => {
         indentLog(`Loading "${m}"`);
         return require(path.resolve(m));
       });
@@ -57,26 +77,23 @@ export default async function(source: string, opts: StartOptions) {
     // Load server rewrite routes
     if (opts.routes) {
       indentLog(`Loading "${opts.routes}"`);
-      finalOpts.routes = JSON.parse(fs.readFileSync(opts.routes, "utf-8"));
+      appOptions.routes = JSON.parse(fs.readFileSync(opts.routes, "utf-8"));
     }
 
     // Create JSON Server application
-    app = await createApp(data, finalOpts);
+    app = await createApp(data, appOptions);
 
     // Start the server using options
-    server = app.listen(opts.port, opts.host);
+    server = app.listen(port, opts.host);
 
     // Print the server state and available routes
-    printState(app.db.getState(), finalOpts);
+    printState(app.db.getState(), appOptions);
 
   }
 
   // Run the server
   return start()
     .then(() => {
-      indentLog("Type [r + enter] at any time to restart the server"),
-      indentLog("Type [s + enter] at any time to create a snapshot of the database");
-
       process.stdin.setEncoding("utf8");
 
       // Support for nohup
@@ -104,9 +121,12 @@ export default async function(source: string, opts: StartOptions) {
         }
       });
 
+      indentLog("Type [r + enter] at any time to restart the server"),
+      indentLog("Type [s + enter] at any time to create a snapshot of the database\n");
+
       // Watch source file and rules route file
       if (opts.watch) {
-        indentLog("\nWatching sources... \n");
+        indentLog("Watching sources... \n");
 
         // Can't watch URL
         if (is.isURL(source)) { throw new Error("Can't watch on URL"); }

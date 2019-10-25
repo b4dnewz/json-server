@@ -19,6 +19,7 @@
   ],
   "scripts": {
     "test": "jest",
+    "lint": "tslint -p . --fix",
     "start": "ts-node src/index.ts ../../fixtures/db.json",
     "build": "tsc"
   },
