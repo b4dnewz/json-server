@@ -52,8 +52,9 @@ export default function(opts: ServerOptions = {}) {
 
   // Logger
   if (opts.logger) {
+    const format = typeof opts.logger === "string" ? opts.logger : "dev";
     arr.push(
-      logger("dev", {
+      logger(format, {
         skip: (req) =>
           process.env.NODE_ENV === "test" || req.path === "/favicon.ico",
       }),

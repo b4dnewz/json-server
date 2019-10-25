@@ -24,7 +24,7 @@ export interface ServerOptions extends RouterOptions {
   pretty?: boolean | number;
   cors?: boolean | CorsOptions;
   gzip?: boolean | CompressionOptions;
-  logger?: boolean;
+  logger?: boolean | string;
   readOnly?: boolean;
   static?: string;
   bodyParser?: boolean;
