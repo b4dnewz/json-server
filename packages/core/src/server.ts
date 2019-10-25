@@ -1,6 +1,7 @@
 import { CompressionOptions } from "compression";
 import { CorsOptions } from "cors";
-import * as express from "express";
+import { Application, RequestHandler, Router } from "express";
+import express = require("express");
 import { LowdbSync } from "lowdb";
 
 import createMiddlewares from "./defaults";
@@ -15,7 +16,7 @@ const defaultOptions: ServerOptions = {
   gzip: true,
 };
 
-export interface JsonServer extends express.Application {
+export interface JsonServer extends Application {
   config: ServerOptions;
   db: LowdbSync<any>;
 }
@@ -28,8 +29,8 @@ export interface ServerOptions extends RouterOptions {
   readOnly?: boolean;
   static?: string;
   bodyParser?: boolean;
-  rewriter?: express.Router;
-  middlewares?: express.RequestHandler[];
+  rewriter?: Router;
+  middlewares?: RequestHandler[];
 }
 
 /**
