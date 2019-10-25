@@ -10,5 +10,9 @@ module.exports = {
   "coverageDirectory": "./coverage",
   "collectCoverageFrom": [
     "packages/*/src/**/*.ts"
+  ],
+  "coveragePathIgnorePatterns": [
+    "node_modules",
+    "packages/cli"
   ]
 }

@@ -2,6 +2,7 @@ import { default as createServer, ExpressTestServer } from "@b4dnewz/express-tes
 import objectToArgv from "@b4dnewz/object-to-argv";
 import { ChildProcess, fork } from "child_process";
 import * as fs from "fs-extra";
+import * as getPort from "get-port";
 import { tmpdir } from "os";
 import * as path from "path";
 import * as serverReady from "server-ready";
@@ -24,6 +25,11 @@ describe("@json-server/cli execution", () => {
   jest.setTimeout(10000);
 
   let proc: ChildProcess;
+  let port: number;
+
+  beforeAll(async () => {
+    port = await getPort();
+  });
 
   describe("local file", () => {
     const snapshotsDir = path.resolve(tmpdir(), "snapshots");
@@ -52,13 +58,14 @@ describe("@json-server/cli execution", () => {
       fs.emptyDirSync(snapshotsDir);
       proc = run(objectToArgv({
         [dbFile]: null,
+        port,
         watch: true,
         snapshots: snapshotsDir,
         static: staticDir,
         routes: routesFile,
       }));
-      request = supertest("http://localhost:3000");
-      serverReady(3000, done);
+      request = supertest(`http://localhost:${port}`);
+      serverReady(port, done);
     });
 
     afterAll((done) => {
@@ -85,7 +92,7 @@ describe("@json-server/cli execution", () => {
     });
 
     it("should write snapshot to disk", (done) => {
-      proc.stdin.write("s\n");
+      proc.stdin.write("s\r\n");
 
       setTimeout(() => {
         const snapshots = fs.readdirSync(snapshotsDir)
@@ -94,23 +101,6 @@ describe("@json-server/cli execution", () => {
         expect(fs.readJsonSync(snapshots[0])).toEqual(dbData);
         done();
       }, 1000);
-    });
-
-    it("should reload the server", (done) => {
-      proc.stdin.write("r\n");
-
-      request.get("/db")
-        .expect(200)
-        .end((err) => {
-          expect(err).toBeDefined();
-          expect(err.code).toEqual("ECONNREFUSED");
-
-          setTimeout(() => {
-            request.get("/db")
-              .expect(200)
-              .end(done);
-          }, 1000);
-        });
     });
 
     it("should update the file content", async () => {
@@ -174,10 +164,12 @@ describe("@json-server/cli execution", () => {
       createServer().then((serv) => {
         server = serv;
         server.get("/db.json", dbData);
-
-        proc = run([`${server.url}/db.json`]);
-        request = supertest("http://localhost:3000");
-        serverReady(3000, done);
+        proc = run(objectToArgv({
+          [`${server.url}/db.json`]: null,
+          port,
+        }));
+        request = supertest(`http://localhost:${port}`);
+        serverReady(port, done);
       });
     });
 
@@ -198,9 +190,12 @@ describe("@json-server/cli execution", () => {
     let request: supertest.SuperTest<supertest.Test>;
 
     beforeAll((done) => {
-      proc = run([dbFile]);
-      request = supertest("http://localhost:3000");
-      serverReady(3000, done);
+      proc = run(objectToArgv({
+        [dbFile]: null,
+        port,
+      }));
+      request = supertest(`http://localhost:${port}`);
+      serverReady(port, done);
     });
 
     afterAll((done) => {
@@ -219,7 +214,7 @@ describe("@json-server/cli execution", () => {
           const data = res.body;
 
           // trigger manual reload
-          proc.stdin.write("r\n");
+          proc.stdin.write("r\r\n");
 
           setTimeout(() => {
             serverReady(3000, () => {

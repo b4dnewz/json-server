@@ -5,15 +5,10 @@ import start from "./start";
 const cli = clito({
   usage: "$ json-server [options] <input>",
   flags: {
-    // @ts-ignore
-    "auth": {
-      description: "Add JWT authentication middlewares",
-    },
     "port": {
       type: "number",
       alias: "p",
-      description: "Set server port",
-      default: 3000,
+      description: "Set a custom server port",
     },
     "host": {
       type: "string",
@@ -103,7 +98,7 @@ const source = input[0];
 
 // Validate source input
 if (!source) {
-  console.error("You need to specify a source, otherwise it wont work.");
+  console.error("You need to specify a database, otherwise it wont work.");
   process.exit(1);
 }
 

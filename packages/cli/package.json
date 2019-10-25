@@ -1,6 +1,6 @@
 {
   "name": "@json-server/cli",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Command line application that provides a REST JSON server",
   "author": "Filippo Conti <filippo@codekraft.it>",
   "homepage": "https://github.com/b4dnewz/json-server",
@@ -30,6 +30,7 @@
   "dependencies": {
     "@json-server/core": "^0.0.1",
     "clito": "^0.2.0",
+    "get-port": "^5.0.0",
     "indent-string": "^4.0.0",
     "json-parse-better-errors": "^1.0.2",
     "request": "^2.88.0"
