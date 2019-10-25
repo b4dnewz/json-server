@@ -38,15 +38,15 @@ describe("@json-server/core:singular", () => {
     });
 
     describe("GET /:resource?_field=", () => {
-      it("should filter the response fields", () => {
-        request(server)
+      it("should filter the response fields", async () => {
+        await request(server)
           .get("/user?_field=name")
           .expect({
             name: db.user.name,
           })
           .expect(200);
 
-        request(server)
+        await request(server)
           .get("/user?_field=name,email")
           .expect({
             name: db.user.name,
