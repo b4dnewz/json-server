@@ -22,7 +22,7 @@ function run(args: string[]) {
 
 describe("@json-server/cli execution", () => {
 
-  jest.setTimeout(10000);
+  jest.setTimeout(30000);
 
   let proc: ChildProcess;
   let port: number;
