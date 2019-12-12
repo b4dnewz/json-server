@@ -6,7 +6,7 @@ import * as path from "path";
 
 import createApp from "./create-app";
 import load from "./load";
-import {clearScreen, indentLog, printJsonError, printState} from "./utils";
+import { clearScreen, indentLog, printJsonError, printState } from "./utils";
 import * as is from "./utils";
 
 export interface StartOptions {
@@ -21,7 +21,7 @@ export interface StartOptions {
   fake: boolean;
 }
 
-export default async function(source: string, opts: StartOptions) {
+export default async function (source: string, opts: StartOptions) {
 
   let app: any;
   let server: any;
@@ -30,6 +30,10 @@ export default async function(source: string, opts: StartOptions) {
   if (opts.quiet) {
     console.log = () => { return; };
   }
+
+  // FIXME: Temporary fix for unmatched option key name
+  // @see: https://github.com/b4dnewz/clito for flag names normalization
+  opts.foreignKeySuffix = (opts as any).fks;
 
   async function start(reload = false) {
 
@@ -122,7 +126,7 @@ export default async function(source: string, opts: StartOptions) {
       });
 
       indentLog("Type [r + enter] at any time to restart the server"),
-      indentLog("Type [s + enter] at any time to create a snapshot of the database\n");
+        indentLog("Type [s + enter] at any time to create a snapshot of the database\n");
 
       // Watch source file and rules route file
       if (opts.watch) {
@@ -134,7 +138,7 @@ export default async function(source: string, opts: StartOptions) {
         // Watch .js or .json file
         // Since lowdb uses atomic writing, directory is watched instead of file
         const watchedDir = path.dirname(source);
-        fs.watch(watchedDir, ({}, file) => {
+        fs.watch(watchedDir, ({ }, file) => {
           if (file) {
             const watchedFile = path.resolve(watchedDir, file);
             if (watchedFile === path.resolve(source)) {
@@ -178,7 +182,7 @@ export default async function(source: string, opts: StartOptions) {
             // If source has changed reload the application
             if (server) {
               indentLog(`${opts.routes} has changed, reloading...`),
-              server.close(() => start(true));
+                server.close(() => start(true));
             }
           });
         }
