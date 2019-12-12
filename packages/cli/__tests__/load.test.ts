@@ -1,11 +1,18 @@
 import createServer from "@b4dnewz/express-test-server";
-import * as path from "path";
-
+import * as temp from "@b4dnewz/temp";
 import load from "../src/load";
 
-const fixturesPath = path.resolve(__dirname, "../../../fixtures");
-
 describe("@json-server/cli loader", () => {
+
+  let tmpDir: temp.DirAsync;
+
+  beforeAll(async () => {
+    tmpDir = await temp.dir("fixtures");
+  });
+
+  afterAll(async () => {
+    await tmpDir.remove();
+  });
 
   it("should reject when source not supported", async () => {
     await expect(load("source.yml")).rejects.toMatch(/Unsupported source/);
@@ -16,21 +23,41 @@ describe("@json-server/cli loader", () => {
   });
 
   it("should resolve local JSON file", async () => {
-    const filename = path.resolve(fixturesPath, "db.json");
-    await expect(load(filename)).resolves.toBe(filename);
+    const tmpFile = await tmpDir.file({}, {
+      name: "db.json",
+    });
+    await expect(load(tmpFile.path)).resolves.toBe(tmpFile.path);
   });
 
   it("should resolve local JS file", async () => {
-    const filename = path.resolve(fixturesPath, "db.js");
-    await expect(load(filename)).resolves.toMatchObject({
+    const tmpFile = await tmpDir.file(`
+      module.exports = function() {
+        return {
+          user: {},
+          posts: []
+        }
+      }
+    `, {
+      name: "db.js",
+    });
+    await expect(load(tmpFile.path)).resolves.toMatchObject({
       user: expect.any(Object),
       posts: expect.any(Array),
     });
   });
 
   it("should reject if local JS file does not export a function", async () => {
-    const filename = path.resolve(fixturesPath, "error.js");
-    await expect(load(filename)).rejects.toMatch(/the export is not a function/);
+    const tmpFile = await tmpDir.file(`
+      module.exports = {
+        user: {
+          id: 1,
+          name: "John"
+        }
+      };
+    `, {
+      name: "error.js",
+    });
+    await expect(load(tmpFile.path)).rejects.toMatch(/the export is not a function/);
   });
 
   it("should load remote JSON file", async () => {
@@ -52,7 +79,7 @@ describe("@json-server/cli loader", () => {
 
   it("should reject if remote file does not exist", async () => {
     const server = await createServer();
-    server.get("/db.json", (req, res) => {
+    server.get("/db.json", ({}, res) => {
       res.status(404).send("Not Found");
     });
     await expect(load(`${server.url}/db.json`)).rejects.toEqual("Not Found");
