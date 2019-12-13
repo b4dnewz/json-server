@@ -108,7 +108,7 @@ export default async function (source: string, opts: StartOptions) {
 
       // Capture stding keypress
       process.stdin.on("data", (chunk) => {
-        const char = chunk.trim().toLowerCase();
+        const char = chunk.toString().trim().toLowerCase();
         switch (char) {
           case "s":
             const filename = `db-${Date.now()}.json`;

@@ -1,4 +1,4 @@
-import { default as createServer, ExpressTestServer } from "@b4dnewz/express-test-server";
+import createServer, { ExpressTestServer } from "@b4dnewz/express-test-server";
 import objectToArgv from "@b4dnewz/object-to-argv";
 import { ChildProcess, fork } from "child_process";
 import * as fs from "fs-extra";

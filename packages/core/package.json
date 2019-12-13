@@ -28,12 +28,11 @@
   ],
   "scripts": {
     "prepublishOnly": "npm run build",
-    "postinstall": "npm run build:front",
     "test": "jest",
     "lint": "tslint -p . --fix",
     "serve": "vue-cli-service serve",
     "build": "tsc && npm run build:front",
-    "build:front": "vue-cli-service build --no-clean"
+    "build:front": "vue-cli-service build"
   },
   "dependencies": {
     "compression": "^1.7.4",
@@ -63,14 +62,14 @@
     "@types/supertest": "^2.0.8",
     "@types/jest": "^24.0.11",
     "@types/node": "^12.6.8",
-    "@vue/cli-service": "^3.9.2",
+    "@vue/cli-service": "^4.1.1",
     "jest": "^24.7.1",
     "supertest": "^4.0.2",
     "ts-jest": "^24.0.2",
     "tslint": "^5.15.0",
     "typescript": "^3.4.3",
-    "vue": "^2.6.10",
-    "vue-template-compiler": "^2.6.10"
+    "vue": "^2.6.11",
+    "vue-template-compiler": "^2.6.11"
   },
   "publishConfig": {
     "access": "public"

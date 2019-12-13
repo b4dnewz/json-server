@@ -1,8 +1,12 @@
 language: node_js
+
 node_js:
-  - "node"
   - "lts/*"
 
-before_script: lerna bootstrap
+before_script:
+  - npm run bootstrap
+  - npm run build
+
 script: jest --coverage --forceExit
+
 after_script: cat ./coverage/lcov.info | coveralls
